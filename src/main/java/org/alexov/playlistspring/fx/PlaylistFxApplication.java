@@ -9,7 +9,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ConfigurableApplicationContext;
 
-public class FxApplication extends Application {
+public class PlaylistFxApplication extends Application {
     private ConfigurableApplicationContext applicationContext;
 
     @Override

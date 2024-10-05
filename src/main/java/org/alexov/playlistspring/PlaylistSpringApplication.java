@@ -1,13 +1,14 @@
 package org.alexov.playlistspring;
 
-import org.springframework.boot.SpringApplication;
+import javafx.application.Application;
+import org.alexov.playlistspring.fx.PlaylistFxApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class PlaylistSpringApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PlaylistSpringApplication.class, args);
-	}
+    public static void main(String[] args) {
+        Application.launch(PlaylistFxApplication.class ,args);
+    }
 
 }

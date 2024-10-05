@@ -1,6 +1,5 @@
-package com.mechanitis.demo.stockui;
+package org.alexov.playlistspring.fx;
 
-import com.mechanitis.demo.stockui.ChartApplication.StageReadyEvent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -9,7 +8,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StageInitializer implements ApplicationListener<StageReadyEvent> {
+public class StageInitializer implements ApplicationListener<PlaylistFxApplication.StageReadyEvent> {
     private final String applicationTitle;
     private final FxWeaver fxWeaver;
 
@@ -20,9 +19,9 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
     }
 
     @Override
-    public void onApplicationEvent(StageReadyEvent event) {
+    public void onApplicationEvent(PlaylistFxApplication.StageReadyEvent event) {
         Stage stage = event.getStage();
-        stage.setScene(new Scene(fxWeaver.loadView(ChartController.class), 800, 600));
+        stage.setScene(new Scene(fxWeaver.loadView(PlaylistController.class), 800, 600));
         stage.setTitle(applicationTitle);
         stage.show();
     }
