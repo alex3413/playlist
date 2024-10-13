@@ -21,7 +21,7 @@ public class StageInitializer implements ApplicationListener<PlaylistFxApplicati
     @Override
     public void onApplicationEvent(PlaylistFxApplication.StageReadyEvent event) {
         Stage stage = event.getStage();
-        stage.setScene(new Scene(fxWeaver.loadView(PlaylistController.class), 800, 600));
+        stage.setScene(new Scene(fxWeaver.loadView(PlaylistController.class), 800, 800));
         stage.setTitle(applicationTitle);
         stage.show();
     }

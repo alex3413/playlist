@@ -4,55 +4,58 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="10.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.alexov.playlistspring.fx.PlaylistController">
+<VBox alignment="CENTER" spacing="10.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.alexov.playlistspring.fx.PlaylistController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
-   <Label text="Список песен" />
-   <TableView id="SongsTable" fx:id="songTable" editable="true" minHeight="-Infinity" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true">
-     <columns>
-       <TableColumn id="SongName" minWidth="75.0" onEditCommit="#onEditNameCell" prefWidth="100.0" text="Название" />
-       <TableColumn id="SongsArtist" onEditCommit="#onEditArtistCell" prefWidth="107.0" text="Исполнитель" />
-         <TableColumn id="SongRating" prefWidth="62.0" text="Рейтинг" />
-         <TableColumn prefWidth="45.0" text="Год" />
-         <TableColumn prefWidth="58.0" text="Альбом" />
-         <TableColumn prefWidth="63.0" text="Жанр" />
-         <TableColumn minWidth="20.0" prefWidth="100.0" text="Награды" />
-     </columns>
-   </TableView>
-   <Label text="Новая песня" />
-   <HBox fx:id="listFieldSongBox" prefHeight="40.0" prefWidth="200.0">
-      <children>
-         <ComboBox id="songArtist" fx:id="artistListView" prefWidth="150.0" promptText="Исполнитель" />
-         <ComboBox id="songGenre" fx:id="genreListView" prefWidth="150.0" promptText="Жанр" />
-         <ComboBox id="songAlbum" fx:id="albumListView" prefWidth="150.0" promptText="Альбом" />
-      </children>
-   </HBox>
-   <HBox fx:id="textFieldSongBox" prefHeight="44.0" prefWidth="244.0">
-      <children>
-         <TextField id="songName" promptText="Название " text="Название" />
-         <TextField id="songRating" promptText="Рейтинг" text="Рейтинг" />
-         <TextField id="songYear" promptText="Год выпуска" text="год" />
-      </children>
-   </HBox>
-   <ListView fx:id="awardListView" minHeight="-Infinity" prefHeight="100.0" prefWidth="200.0" />
-   <ButtonBar prefHeight="40.0" prefWidth="200.0">
-     <buttons>
-       <Button mnemonicParsing="false" text="Добавить в плейлист" />
-          <Button fx:id="firstButton" onAction="#onAddSelectedSong" text="Создать песню" />
-     </buttons>
-   </ButtonBar>
-   <Separator prefWidth="200.0" />
+    <Label text="Список песен" />
+    <TableView id="SongsTable" fx:id="songTable" editable="true" minHeight="-Infinity" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true">
+        <columns>
+            <TableColumn id="SongName" minWidth="75.0" onEditCommit="#onEditNameCell" prefWidth="100.0" text="Название" />
+            <TableColumn id="SongsArtist" onEditCommit="#onEditArtistCell" prefWidth="107.0" text="Исполнитель" />
+            <TableColumn id="SongRating" prefWidth="62.0" text="Рейтинг" />
+            <TableColumn prefWidth="45.0" text="Год" />
+            <TableColumn prefWidth="58.0" text="Альбом" />
+            <TableColumn prefWidth="63.0" text="Жанр" />
+            <TableColumn minWidth="20.0" prefWidth="100.0" text="Награды" />
+        </columns>
+    </TableView>
+    <HBox prefHeight="43.0" prefWidth="350.0">
+        <children>
+            <Button mnemonicParsing="false" onAction="#onDeleteTableItem" text="Удалить выбранное" />
+        </children>
+    </HBox>
+    <Label text="Новая песня" />
+    <HBox fx:id="listFieldSongBox" prefHeight="40.0" prefWidth="200.0">
+        <children>
+            <ComboBox id="songArtist" fx:id="artistListView" prefWidth="150.0" promptText="Исполнитель" />
+            <ComboBox id="songGenre" fx:id="genreListView" prefWidth="150.0" promptText="Жанр" />
+            <ComboBox id="songAlbum" fx:id="albumListView" prefWidth="150.0" promptText="Альбом" />
+        </children>
+    </HBox>
+    <HBox fx:id="textFieldSongBox" prefHeight="44.0" prefWidth="244.0">
+        <children>
+            <TextField id="songName" promptText="Название " text="Название" />
+            <TextField id="songRating" promptText="Рейтинг" text="Рейтинг" />
+            <TextField id="songYear" promptText="Год выпуска" text="год" />
+        </children>
+    </HBox>
+    <ListView fx:id="awardListView" minHeight="-Infinity" prefHeight="100.0" prefWidth="200.0" />
+    <ButtonBar prefHeight="40.0" prefWidth="200.0">
+        <buttons>
+            <Button mnemonicParsing="false" onAction="#onAddSongPlaylist" text="Добавить в плейлист" />
+            <Button onAction="#onAddSelectedSong" text="Создать песню" />
+        </buttons>
+    </ButtonBar>
+    <Separator prefWidth="200.0" />
 
 
-                      <Label fx:id="welcomeText" text="Список песен в плейлисте" />
+    <Label fx:id="welcomeText" text="Список песен в плейлисте" />
     <ListView fx:id="songList" editable="true" minHeight="-Infinity" onEditCommit="#onEditSongList" prefHeight="100.0" prefWidth="200.0" />
-   <ButtonBar prefHeight="40.0" prefWidth="200.0">
-     <buttons>
-       <Button fx:id="dictionaryButton" mnemonicParsing="false" onAction="#onOpenDictionary" text="Справочники" />
-          <Button mnemonicParsing="false" onAction="#onHideSongs" text="Hide songs" />
-         <Button layoutX="551.0" layoutY="15.0" mnemonicParsing="false" onAction="#onHideSongs" text="Hide songs" />
-         <Button layoutX="551.0" layoutY="15.0" mnemonicParsing="false" onAction="#onHideSongs" text="Hide songs" />
-     </buttons>
-   </ButtonBar>
+    <ButtonBar prefHeight="40.0" prefWidth="200.0">
+        <buttons>
+            <Button mnemonicParsing="false" onAction="#onShowReportsView" text="Отчеты" />
+            <Button mnemonicParsing="false" onAction="#onOpenDictionary" text="Справочники" />
+        </buttons>
+    </ButtonBar>
 </VBox>

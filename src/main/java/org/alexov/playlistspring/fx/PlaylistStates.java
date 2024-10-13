@@ -1,13 +1,11 @@
 package org.alexov.playlistspring.fx;
 
 import jakarta.annotation.PostConstruct;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.alexov.playlistspring.model.dictionary.Album;
-import org.alexov.playlistspring.model.dictionary.Artist;
-import org.alexov.playlistspring.model.dictionary.Award;
-import org.alexov.playlistspring.model.dictionary.Genre;
+import org.alexov.playlistspring.model.dictionary.*;
 import org.alexov.playlistspring.model.dto.Song;
 import org.alexov.playlistspring.model.entity.Compostion;
 import org.alexov.playlistspring.model.entity.CompostionAwards;
@@ -48,7 +46,6 @@ public class PlaylistStates {
         this.albums = observableArrayList(playlistService.findAllAlbums());
         this.artists = observableArrayList(playlistService.findAllArtists());
         this.songs = observableArrayList();
-
         awardsMap = awards.stream().collect(Collectors.toMap(Award::getCode, e->e));
         genresMap = genres.stream().collect(Collectors.toMap(Genre::getCode, e->e));
         albumsMap = albums.stream().collect(Collectors.toMap(Album::getId, e->e));
@@ -56,10 +53,14 @@ public class PlaylistStates {
         songAwards = playlistService.findAllCompositionAwards().stream()
                 .collect(Collectors.groupingBy(CompostionAwards::getSongId,
                         Collectors.mapping(e -> awardsMap.get(e.getAwardCode()), Collectors.toList())));
+        fillSongsList();
+        this.songs.addListener(getSongChangeListener());
+        this.awards.addListener(getAwardChangeListener());
+        this.albums.addListener(getAlbumChangeListener());
 
     }
 
-    public ObservableList<Song> getSongs() {
+    private void fillSongsList() {
         compostions.forEach(c ->
                 songs.add(Song.builder()
                         .id(c.getId())
@@ -72,6 +73,57 @@ public class PlaylistStates {
                         .songGenre(genresMap.get(c.getSongGenreCode()))
                         .build()));
 
-        return songs;
+    }
+    private  ListChangeListener<Song> getSongChangeListener(){
+        return (change) -> {
+            change.next();
+            if(change.wasAdded()) {
+
+                System.out.println(change.getAddedSubList());
+            }
+            if(change.wasRemoved()){
+                System.out.println(change.getRemoved());
+            }
+
+        };
+    }
+    private  ListChangeListener<Award> getAwardChangeListener(){
+        return (change) -> {
+            change.next();
+            if(change.wasAdded()) {
+
+                System.out.println(change.getAddedSubList());
+            }
+            if(change.wasRemoved()){
+                System.out.println(change.getRemoved());
+            }
+
+        };
+    }
+
+    private  ListChangeListener<Album> getAlbumChangeListener(){
+        return (change) -> {
+            change.next();
+            if(change.wasAdded()) {
+
+                System.out.println(change.getAddedSubList());
+            }
+            if(change.wasRemoved()){
+                Album deletedAlbum = change.getRemoved().get(0);
+                editSongsByAlbum(deletedAlbum);
+                //todo deleteAlbum
+                System.out.println(change.getRemoved());
+            }
+
+        };
+    }
+
+    private <T extends AbstractDictionary>void editSongsByAlbum(T id) {
+        songs.forEach(s -> {
+            if(id instanceof Album && id.equals(s.getAlbum())){
+                s.setSongAlbum(null);
+                // todo сохранить песню в БД
+            }
+        });
     }
 }

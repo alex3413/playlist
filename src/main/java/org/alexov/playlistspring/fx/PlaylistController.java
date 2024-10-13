@@ -1,6 +1,5 @@
 package org.alexov.playlistspring.fx;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,17 +9,16 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
+import javafx.util.StringConverter;
 import lombok.RequiredArgsConstructor;
 import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.alexov.playlistspring.model.dictionary.*;
 import org.alexov.playlistspring.model.dto.Song;
-import org.alexov.playlistspring.model.entity.Compostion;
 import org.alexov.playlistspring.repository.PlaylistRepository;
 import org.controlsfx.control.spreadsheet.StringConverterWithFormat;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static javafx.collections.FXCollections.observableArrayList;
@@ -30,22 +28,24 @@ import static javafx.collections.FXCollections.observableArrayList;
 @RequiredArgsConstructor
 public class PlaylistController {
     private final FxWeaver fxWeaver;
-    private final PlaylistRepository repo;
     private final PlaylistStates playlistStates;
 
-    public Button dictionaryButton;
-    public HBox textFieldSongBox;
-    public HBox listFieldSongBox;
-    public ListView<Award> awardListView;
-    public ComboBox<Artist> artistListView;
-    public ComboBox<Genre> genreListView;
-    public ComboBox<Album> albumListView;
+    @FXML
+    private HBox textFieldSongBox;
+    @FXML
+    private HBox listFieldSongBox;
+    @FXML
+    private ListView<Award> awardListView;
+    @FXML
+    private ComboBox<Artist> artistListView;
+    @FXML
+    private ComboBox<Genre> genreListView;
+    @FXML
+    private ComboBox<Album> albumListView;
     @FXML
     private TableView<Song> songTable;
     @FXML
-    private Button firstButton;
-    @FXML
-    private ListView<String> songList;
+    private ListView<Song> songList;
     @FXML
     private TextField songNameText;
     @FXML
@@ -54,6 +54,7 @@ public class PlaylistController {
 
     public void initialize() {
         songTable.setItems(playlistStates.getSongs());
+        songTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         awardListView.setItems(playlistStates.getAwards());
         awardListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
@@ -68,8 +69,8 @@ public class PlaylistController {
 
         configureColumn(0, "songName");
         configureColumn(1, "songArtist");
-        configureColumn(2, "songRating");
-        configureColumn(3, "songYear");
+        configureColumn(2, "songYear");
+        configureColumn(3, "songRating");
         configureColumn(4, "songAlbum");
         configureColumn(5, "songGenre");
         configureColumn(6, "songAwards");
@@ -78,8 +79,8 @@ public class PlaylistController {
         songTableListener();
 
 
-        songList.setCellFactory(p -> new TextFieldListCell<>());
-        welcomeText.setText("Welcome to JavaFX Application!");
+        songList.setCellFactory(p -> getSongTextFieldListCell());
+        welcomeText.setText("Добро пожаловать в приложение \"плейлист\" " );
 
     }
 
@@ -115,13 +116,14 @@ public class PlaylistController {
                 .songGenre((Genre) nodeListFieldMap.get("songGenre"))
                 .songAlbum((Album) nodeListFieldMap.get("songAlbum"))
                 .songAwards(awards).build();
+
         playlistStates.getSongs().add(songBuilder);
 
     }
 
-    public void onEditSongList(ListView.EditEvent<String> stringEditEvent) {
-        String newValue = stringEditEvent.getNewValue();
-        ObservableList<String> items = songList.getItems();
+    public void onEditSongList(ListView.EditEvent<Song> stringEditEvent) {
+        var newValue = stringEditEvent.getNewValue();
+        var items = songList.getItems();
         if (items.contains(newValue)) {
             welcomeText.setText("Песня с наименованием " + newValue + " уже есть в списке");
             return;
@@ -129,10 +131,6 @@ public class PlaylistController {
         items.set(stringEditEvent.getIndex(), newValue);
     }
 
-    public void onAddItemToListView() {
-        ObservableList<String> items = songList.getItems();
-        items.add(songNameText.getText());
-    }
 
     private void songListListener() {
         songList.getSelectionModel().selectedItemProperty().addListener((c, o, n) -> {
@@ -151,13 +149,12 @@ public class PlaylistController {
         songNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
     }
 
-    public void onHideSongs() {
-        var isDis = songList.isVisible();
-        songList.setVisible(!isDis);
-    }
-
     public void onOpenDictionary(ActionEvent actionEvent) {
         fxWeaver.loadController(DictionaryController.class).show();
+    }
+
+    public void onShowReportsView(ActionEvent actionEvent) {
+        fxWeaver.loadController(ReportController.class).show();
     }
 
     private static TextFieldListCell<Award> getAwardTextFieldListCell() {
@@ -225,4 +222,30 @@ public class PlaylistController {
             }
         });
     }
+
+
+    private static TextFieldListCell<Song> getSongTextFieldListCell() {
+        return new TextFieldListCell<>(new StringConverter<>() {
+            @Override
+            public String toString(Song song) {
+                return String.format("Название: %s. Исполнитель %s. Награды: %s", song.getSongName(), song.getSongArtist(), song.getSongAwards());
+            }
+
+            @Override
+            public Song fromString(String s) {
+                 throw new UnsupportedOperationException();
+            }
+        });
+    }
+
+    public void onDeleteTableItem(ActionEvent actionEvent) {
+        var selectedIndices = songTable.getSelectionModel().getSelectedIndices();
+        selectedIndices.forEach(i -> songTable.getItems().remove(i.intValue()));
+    }
+
+    public void onAddSongPlaylist(ActionEvent actionEvent) {
+        var selectedSongs = songTable.getSelectionModel().getSelectedItems();
+        songList.getItems().addAll(selectedSongs);
+    }
+
 }

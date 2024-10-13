@@ -2,6 +2,8 @@ package org.alexov.playlistspring.model.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.alexov.playlistspring.model.dictionary.Album;
 import org.alexov.playlistspring.model.dictionary.Artist;
 import org.alexov.playlistspring.model.dictionary.Award;
@@ -9,10 +11,11 @@ import org.alexov.playlistspring.model.dictionary.Genre;
 
 import java.util.List;
 
-@Data
+@Setter
 @Builder
 public class Song {
     private int id;
+    @Getter
     private String songName;
     private Artist songArtist;
     private Integer songRating;
@@ -44,6 +47,10 @@ public class Song {
 
     public String getSongAwards() {
         return this.songAwards == null ? "" : String.join("; ", songAwards.stream().map(Award::getName).toList());
+    }
+
+    public Album getAlbum(){
+        return this.songAlbum;
     }
 
 }

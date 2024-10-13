@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="mainVbox" prefHeight="800.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.alexov.playlistspring.fx.ReportController">
+   <children>
+      <HBox prefHeight="203.0" prefWidth="600.0">
+         <children>
+            <ListView fx:id="topTenListView" prefHeight="203.0" prefWidth="280.0" />
+            <Label prefHeight="21.0" prefWidth="152.0" text="Топ 10 по наградам" />
+            <Button mnemonicParsing="false" onAction="#getTopTenByAwards" text="Сформировать топ 10" />
+         </children>
+      </HBox>
+      <Separator prefWidth="200.0" />
+      <HBox prefHeight="212.0" prefWidth="600.0">
+         <children>
+            <ListView fx:id="totalGenreListView" prefHeight="212.0" prefWidth="280.0" />
+            <Label text="Песни по жанрам за год" />
+            <VBox prefHeight="212.0" prefWidth="163.0">
+               <children>
+                  <Label prefHeight="21.0" prefWidth="56.0" text="Выберите год" />
+                  <DatePicker fx:id="genreYearField" />
+                  <Button mnemonicParsing="false" onAction="#getTotalForGenreByYear" prefHeight="31.0" prefWidth="161.0" text="Получить по жанрам" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <Separator layoutX="10.0" layoutY="110.0" prefWidth="200.0" />
+      <HBox prefHeight="194.0" prefWidth="600.0">
+         <children>
+            <ListView fx:id="topAlbumByGenreListView" prefHeight="194.0" prefWidth="293.0" />
+            <Label text="Самые популярные по жанру" />
+            <VBox prefHeight="194.0" prefWidth="150.0">
+               <children>
+                  <ListView fx:id="genreListView" prefHeight="101.0" prefWidth="134.0" />
+                  <Button mnemonicParsing="false" onAction="#getTopAlbumByGenre" text="Получить по наградам" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <Separator layoutX="10.0" layoutY="213.0" prefWidth="200.0" />
+      <HBox prefHeight="171.0" prefWidth="600.0">
+         <children>
+            <ListView fx:id="artistReleaseAlbumListView" prefHeight="171.0" prefWidth="287.0" />
+            <Label text="Есть альбом за период" />
+            <VBox prefHeight="171.0" prefWidth="158.0">
+               <children>
+                  <DatePicker fx:id="albumPeriodFormField" promptText="с" />
+                  <DatePicker fx:id="albumPeriodToField" promptText="по" />
+                  <Button mnemonicParsing="false" onAction="#getArtistHaveAlbumByPeriod" text="сформировать за период" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>
