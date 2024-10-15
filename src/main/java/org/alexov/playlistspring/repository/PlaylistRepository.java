@@ -10,14 +10,19 @@ import org.alexov.playlistspring.model.entity.Compostion;
 import org.alexov.playlistspring.model.entity.CompostionAwards;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Types;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 public class PlaylistRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public List<Compostion> getAllSongs() {
         String query = """
@@ -55,14 +60,15 @@ public class PlaylistRepository {
         return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Artist.class), topNumbers);
     }
 
-    public List<TotalGenreDto> getGenreWithTotalSOngsByYear(int year) {
+    public List<TotalGenreDto> getGenreWithTotalSOngsByYear(LocalDate year) {
         var query = """
-                select g.*, count(rsr.song_id) from song s
+                select g."name" as genre, count(rsr.song_id) as totalSongs from song s
                 join rl_song_rating rsr on rsr.song_id = s.id
                 join dc_genre g on g.code = rsr.song_genre_code
-                where s.song_year = ? ::date
-                group by g.code ;
+                where s.song_year = ?
+                group by g."name" ;
                 """;
+
         return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(TotalGenreDto.class), year);
     }
 
@@ -70,19 +76,20 @@ public class PlaylistRepository {
         var query = """
                 select a.* from rl_song_rating rsr
                 join dc_album a on a.id = rsr.song_album_id
-                where rsr.song_genre_code in (?)
+                where rsr.song_genre_code in (:genres)
                 group by a.id  order by avg(rsr.song_rating) desc limit 1;
                 """;
-        return jdbcTemplate.queryForObject(query, Album.class, genres);
+        return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource("genres", genres),
+                (rs, row) -> new Album(rs.getInt("id"), rs.getString("name")));
     }
 
-    public List<Artist> getArtistsHasOneAlbumbyPeriod(int from, int to) {
+    public List<Artist> getArtistsHasOneAlbumbyPeriod(LocalDate from, LocalDate to) {
         var query = """
                 select distinct a.*  from song s
                 join dc_artist a on a.id = s.artist_id
                 join rl_song_rating rsr on rsr.song_id = s.id
                 where rsr.song_album_id notnull
-                and s.year between ? and ?
+                and s.song_year between ? and ?
                 order by a.id desc;
                 """;
         return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Artist.class), from, to);

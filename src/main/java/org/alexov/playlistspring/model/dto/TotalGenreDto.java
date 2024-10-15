@@ -9,6 +9,11 @@ import org.alexov.playlistspring.model.dictionary.Genre;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TotalGenreDto {
-    private Genre genre;
+    private String genre;
     private Integer totalSongs;
+
+    @Override
+    public String toString() {
+        return  genre + "(total=" + totalSongs + ")";
+    }
 }

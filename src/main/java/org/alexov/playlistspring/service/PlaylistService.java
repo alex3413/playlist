@@ -58,7 +58,7 @@ public class PlaylistService {
      * @return
      */
     public List<TotalGenreDto> getGenreWithTotalSOngsByYear(LocalDate year) {
-        return playlistRepository.getGenreWithTotalSOngsByYear(year.getYear());
+        return playlistRepository.getGenreWithTotalSOngsByYear(year);
     }
 
     /**
@@ -77,6 +77,6 @@ public class PlaylistService {
      * @return
      */
     public List<Artist> getArtistsHasOneAlbumbyPeriod(LocalDate from, LocalDate to) {
-        return playlistRepository.getArtistsHasOneAlbumbyPeriod(from.getYear(), to.getYear());
+        return playlistRepository.getArtistsHasOneAlbumbyPeriod(from, to);
     }
 }

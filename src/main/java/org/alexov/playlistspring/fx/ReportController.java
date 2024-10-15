@@ -5,11 +5,13 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.RequiredArgsConstructor;
 import net.rgielen.fxweaver.core.FxmlView;
+import org.alexov.playlistspring.model.dictionary.Album;
 import org.alexov.playlistspring.model.dictionary.Artist;
 import org.alexov.playlistspring.model.dictionary.Genre;
 import org.alexov.playlistspring.model.dto.TotalGenreDto;
@@ -33,7 +35,7 @@ public class ReportController {
     @FXML
     private ListView<TotalGenreDto> totalGenreListView;
     @FXML
-    private ListView<?> topAlbumByGenreListView;
+    private ListView<Album> topAlbumByGenreListView;
     @FXML
     private ListView<Genre> genreListView;
     @FXML
@@ -50,6 +52,7 @@ public class ReportController {
     @FXML
     public void initialize() {
         genreListView.setItems(playlistStates.getGenres());
+        genreListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         this.stage = new Stage();
         stage.setScene(new Scene(mainVbox));
@@ -64,15 +67,17 @@ public class ReportController {
     }
 
     public void getTotalForGenreByYear(ActionEvent actionEvent) {
-
-        playlistService.getGenreWithTotalSOngsByYear(now());
+        totalGenreListView.getItems().clear();
+        totalGenreListView.getItems().addAll(playlistService.getGenreWithTotalSOngsByYear(genreYearField.getValue()));
     }
 
     public void getTopAlbumByGenre(ActionEvent actionEvent) {
-        playlistService.getTopAlbumByGenres(Collections.singletonList(new Genre()));
+        topAlbumByGenreListView.getItems().clear();
+        topAlbumByGenreListView.getItems().add(playlistService.getTopAlbumByGenres(genreListView.getSelectionModel().getSelectedItems()));
     }
 
     public void getArtistHaveAlbumByPeriod(ActionEvent actionEvent) {
-        playlistService.getArtistsHasOneAlbumbyPeriod(albumPeriodFormField.getValue(), albumPeriodToField.getValue());
+        artistReleaseAlbumListView.getItems().clear();
+        artistReleaseAlbumListView.getItems().addAll(playlistService.getArtistsHasOneAlbumbyPeriod(albumPeriodFormField.getValue(), albumPeriodToField.getValue()));
     }
 }

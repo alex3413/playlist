@@ -4,10 +4,14 @@ import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class Album extends AbstractDictionary {
     private int id;
+
+    public Album(int id, String name) {
+        this.id = id;
+        setName(name);
+    }
 
     @Override
     public String toString() {
