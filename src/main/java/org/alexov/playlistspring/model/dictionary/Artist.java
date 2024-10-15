@@ -1,13 +1,12 @@
 package org.alexov.playlistspring.model.dictionary;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Artist {
+public class Artist extends AbstractDictionary {
     private int id;
     private String name;
 
